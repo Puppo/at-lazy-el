@@ -1,13 +1,22 @@
 import { Component, OnInit, ViewEncapsulation, NgModule, CUSTOM_ELEMENTS_SCHEMA, Input, Output, EventEmitter } from '@angular/core';
 import { LazyService } from '@atonspa/lazy';
 
+export const ProductWebComponentTemplate = `
+<p>{{ title }} works!</p>
+<div>
+  Hello {{ name }}
+</div>
+<button (click)="sayHello()">Say hello</button>
+`;
+
 @Component({
   selector: 'lib-product-web',
-  templateUrl: './product-web.component.html',
-  styleUrls: ['./product-web.component.css'],
+  template: ProductWebComponentTemplate,
   encapsulation: ViewEncapsulation.ShadowDom
 })
 export class ProductWebComponent {
+
+  title = 'product-web';
 
   @Input() name: string;
 

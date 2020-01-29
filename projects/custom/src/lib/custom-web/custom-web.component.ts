@@ -1,13 +1,14 @@
 import { Component, ViewEncapsulation, CUSTOM_ELEMENTS_SCHEMA, NgModule, Input } from '@angular/core';
-import { ProductWebComponent } from '@atonspa/product';
+import { ProductWebComponent, ProductWebComponentTemplate } from '@atonspa/product';
 
 @Component({
   selector: 'lib-custom-web',
-  templateUrl: './custom-web.component.html',
-  styleUrls: ['./custom-web.component.css'],
+  template: ProductWebComponentTemplate,
   encapsulation: ViewEncapsulation.ShadowDom
 })
 export class CustomWebComponent extends ProductWebComponent {
+
+  title = 'custom-web';
 
   sayHello() {
     this.hello.emit(`Hello ${this.name} from lib-custom-web`);
