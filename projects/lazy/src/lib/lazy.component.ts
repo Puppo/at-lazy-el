@@ -7,4 +7,4 @@ export interface ILazyComponentDef {
   loadChildren: LoadChildrenCallback;
 }
 
-export const LAZY_COMPONENTS = new InjectionToken<ILazyComponentDef>('LAZY_COMPONENTS');
+export const LAZY_COMPONENTS = new InjectionToken<ILazyComponentDef[]>('LAZY_COMPONENTS');

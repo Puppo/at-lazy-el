@@ -23,7 +23,6 @@ export class LazyDirective implements OnInit {
           this.vcr.clear();
           this.vcr.createEmbeddedView(this.template);
         }
-
       })
     ).subscribe();
   }
