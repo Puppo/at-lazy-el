@@ -17,7 +17,18 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@atonspa/lazy": [
+        "projects/lazy/src/public-api.ts"
+      ],
+      "@atonspa/product": [
+        "projects/product/src/public-api.ts"
+      ],
+      "@atonspa/custom": [
+        "projects/custom/src/public-api.ts"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
