@@ -5,7 +5,8 @@
     "types": []
   },
   "angularCompilerOptions": {
-    "enableIvy": false
+    "enableIvy": true,
+    "generateDeepReexports": true
   },
   "files": [
     "src/main.ts",

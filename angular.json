@@ -128,6 +128,7 @@
             "polyfills": "projects/product-app/src/polyfills.ts",
             "tsConfig": "projects/product-app/tsconfig.app.json",
             "aot": true,
+            "preserveSymlinks": true,
             "assets": [
               "projects/product-app/src/favicon.ico",
               "projects/product-app/src/assets"
@@ -250,6 +251,7 @@
             "polyfills": "projects/custom-app/src/polyfills.ts",
             "tsConfig": "projects/custom-app/tsconfig.app.json",
             "aot": true,
+            "preserveSymlinks": true,
             "assets": [
               "projects/custom-app/src/favicon.ico",
               "projects/custom-app/src/assets"

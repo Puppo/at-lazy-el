@@ -10,6 +10,20 @@
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:4200",
             "webRoot": "${workspaceFolder}"
+        },
+        {
+          "type": "chrome",
+          "request": "launch",
+          "name": "Launch Chrome 8080 Product app",
+          "url": "http://localhost:8080",
+          "webRoot": "${workspaceFolder}/dist/product-app"
+        },
+        {
+          "type": "chrome",
+          "request": "launch",
+          "name": "Launch Chrome 8080 Custom app",
+          "url": "http://localhost:8080",
+          "webRoot": "${workspaceFolder}/dist/product-app"
         }
     ]
 }

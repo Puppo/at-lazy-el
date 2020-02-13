@@ -20,13 +20,13 @@
     ],
     "paths": {
       "@atonspa/lazy": [
-        "projects/lazy/src/public-api.ts"
+        "dist/lazy"
       ],
       "@atonspa/product": [
-        "projects/product/src/public-api.ts"
+        "dist/product"
       ],
       "@atonspa/custom": [
-        "projects/custom/src/public-api.ts"
+        "dist/custom"
       ]
     }
   },

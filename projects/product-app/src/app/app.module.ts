@@ -1,9 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ProductModule } from '@atonspa/product';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, SystemJsNgModuleLoader, NgModuleFactoryLoader } from '@angular/core';
+import { ProductRoutingModule } from '@atonspa/product';
 
 import { AppComponent } from './app.component';
 import { LazyModule } from '@atonspa/lazy';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,13 @@ import { LazyModule } from '@atonspa/lazy';
   imports: [
     BrowserModule,
     LazyModule,
-    ProductModule
+    ProductRoutingModule,
+    RouterModule.forRoot([
+      { path: '', redirectTo: '/product', pathMatch: 'full' }
+    ], {
+      enableTracing: true,
+      useHash: true
+    })
   ],
   bootstrap: [AppComponent]
 })
