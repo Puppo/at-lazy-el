@@ -7,7 +7,11 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build:product": "ng build lazy && ng build product",
+    "build:custom": "ng build custom",
+    "serve:product": "ng serve product-app",
+    "serve:custom": "ng serve custom-app"
   },
   "private": true,
   "dependencies": {

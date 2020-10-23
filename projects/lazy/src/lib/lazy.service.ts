@@ -1,70 +1,93 @@
-import { Injectable, Inject, Compiler, NgModuleFactory, NgModuleRef, Injector, Type, Optional } from '@angular/core';
+import {
+  Injectable,
+  Inject,
+  Compiler,
+  NgModuleFactory,
+  NgModuleRef,
+  Injector,
+  Type,
+  Optional,
+} from '@angular/core';
 import { ILazyComponentDef, LAZY_COMPONENTS } from './lazy.component';
-import { skipWhile, map } from 'rxjs/operators';
+import { skipWhile, map, tap } from 'rxjs/operators';
 import { createCustomElement } from '@angular/elements';
 import { LAZY_CACHE, LazyState } from './lazy.cache';
-
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LazyService {
-
   constructor(
     private compiler: Compiler,
     private injector: Injector,
-    @Optional() @Inject(LAZY_COMPONENTS) protected lazyComponents: ILazyComponentDef[]
-  ) { }
+    @Optional()
+    @Inject(LAZY_COMPONENTS)
+    protected lazyComponents: ILazyComponentDef[]
+  ) {}
 
+  /**
+   * Load web component from LAZY_COMPONENTS definition
+   * @param selector component selector
+   */
+  load(selector: string): Observable<boolean>;
   /**
    * Load web component
    * if LAZY_COMPONENTS contains selector load lazy component
    * else load componentType
    * @param selector component selector
    * @param componentType Component type default
+   * @deprecated
    */
+  load(selector: string, componentType: Type<any>): Promise<boolean>;
   load(
     selector: string,
-    componentType: Type<any>
-  ): Promise<boolean> {
+    componentType?: Type<any>
+  ): Promise<boolean> | Observable<boolean> {
     if (!LAZY_CACHE.has(selector)) {
       LAZY_CACHE.add(selector, LazyState.loading);
-      const lazyDef = (this.lazyComponents || []).find(x => x.selector === selector);
+      const definitions = (this.lazyComponents || []).filter(
+        (x) => x.selector === selector
+      );
+      const lazyDef = definitions.find((c) => !!c.custom) || definitions[0];
       if (!lazyDef) {
         this.registerWebComponents(selector, componentType);
         LAZY_CACHE.set(selector, LazyState.loaded);
       } else {
         this.loadLazyModuleFactory(lazyDef.loadChildren)
-        .then(moduleFactory => this.createModule(moduleFactory))
-        .then(moduleRef => {
-          this.registerWebComponents(
-            selector,
-            moduleRef.instance.components[selector],
-            moduleRef.injector
-          );
-          LAZY_CACHE.set(selector, LazyState.loaded);
-        })
-        .catch(err => {
-          LAZY_CACHE.set(selector, LazyState.error);
-          console.error(err);
-        });
+          .then((moduleFactory) => this.createModule(moduleFactory))
+          .then((moduleRef) => {
+            this.registerWebComponents(
+              selector,
+              moduleRef.instance.components[selector],
+              moduleRef.injector
+            );
+            LAZY_CACHE.set(selector, LazyState.loaded);
+          })
+          .catch((err) => {
+            LAZY_CACHE.set(selector, LazyState.error);
+            console.error(err);
+          });
       }
     }
 
-    return LAZY_CACHE.get(selector).pipe(
-      skipWhile(x => x === LazyState.loading),
-      map(x => x === LazyState.loaded)
-    ).toPromise();
+    const result = LAZY_CACHE.get(selector).pipe(
+      skipWhile((x) => x === LazyState.loading),
+      map((x) => x === LazyState.loaded)
+    );
 
+    return componentType ? result.toPromise() : result;
   }
 
   /**
    * Load lazy path
    * @param path Path to load
    */
-  private loadLazyModuleFactory(path: () => any): Promise<NgModuleFactory<any>> {
+  private loadLazyModuleFactory(
+    path: () => any
+  ): Promise<NgModuleFactory<any>> {
     return (path() as Promise<NgModuleFactory<any>>).then(
-      elementModuleOrFactory => {
+      (elementModuleOrFactory) => {
         if (elementModuleOrFactory instanceof NgModuleFactory) {
           // if ViewEngine
           return elementModuleOrFactory;

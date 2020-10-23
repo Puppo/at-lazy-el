@@ -1,47 +1,40 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
-import { ProductRoutingModule } from '@atonspa/product';
-import { AppComponent } from './app.component';
-import { LAZY_COMPONENTS, LazyModule, ILazyComponentDef } from '@atonspa/lazy';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ValueProvider } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ProductRoutingModule } from '@atonspa/product';
 
-const libProductWebDef: ILazyComponentDef = {
+import { AppComponent } from './app.component';
+import { LazyModule, createLazyComponentProvider } from '@atonspa/lazy';
+
+const productWebRegistry: ValueProvider = createLazyComponentProvider({
   selector: 'lib-product-web',
-  loadChildren: () => import('@atonspa/custom').then(mod => mod.CustomWebModule)
-};
+  loadChildren: () =>
+    import('@atonspa/product').then((mod) => mod.ProductWebModule),
+});
 
-const libProductPageDef: ILazyComponentDef = {
-  selector: 'lib-product-page',
-  loadChildren: () => import('@atonspa/custom').then(mod => mod.CustomPageModule)
-};
+const productWebCustomRegistry: ValueProvider = createLazyComponentProvider({
+  selector: 'lib-product-web',
+  loadChildren: () =>
+    import('@atonspa/custom').then((mod) => mod.CustomWebModule),
+  custom: true,
+});
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     LazyModule,
     ProductRoutingModule,
 
     RouterModule.forRoot([
-      { path: '', redirectTo: '/product', pathMatch: 'full' }
-    ])
+      { path: '', redirectTo: '/product', pathMatch: 'full' },
+    ]),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    // {
-    //   provide: LAZY_COMPONENTS,
-    //   useValue: libProductWebDef,
-    //   multi: true
-    // },
-    // {
-    //   provide: LAZY_COMPONENTS,
-    //   useValue: libProductPageDef,
-    //   multi: true
-    // }
+    // productWebRegistry,
+    productWebCustomRegistry,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

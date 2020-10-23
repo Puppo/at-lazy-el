@@ -6,12 +6,12 @@ interface ILazyComponentModule {
   componentType: Type<any>;
 }
 
+/**
+ * Lazy component module
+ * @deprecated
+ */
 export class LazyComponentModule {
-  constructor(
-    lazySv: LazyService,
-    config: ILazyComponentModule
-  ) {
+  constructor(lazySv: LazyService, config: ILazyComponentModule) {
     lazySv.load(config.selector, config.componentType);
   }
-
 }

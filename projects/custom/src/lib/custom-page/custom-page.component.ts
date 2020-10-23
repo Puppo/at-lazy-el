@@ -1,7 +1,5 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
-import { LazyModule, LazyService } from '@atonspa/lazy';
 
 @Component({
   selector: 'lib-custom-page',
@@ -9,21 +7,12 @@ import { LazyModule, LazyService } from '@atonspa/lazy';
 })
 export class CustomPageComponent {}
 
-
 @NgModule({
   imports: [
-    LazyModule,
-    RouterModule.forChild([
-      { path: '', component: CustomPageComponent }
-    ])
+    RouterModule.forChild([{ path: '', component: CustomPageComponent }]),
   ],
   declarations: [CustomPageComponent],
-  entryComponents: [CustomPageComponent],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  exports: [RouterModule]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  exports: [RouterModule],
 })
-export class CustomPageModule {
-  components = {
-    'lib-product-page': CustomPageComponent
-  };
-}
+export class CustomPageModule {}

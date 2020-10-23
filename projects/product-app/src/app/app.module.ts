@@ -1,27 +1,29 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, SystemJsNgModuleLoader, NgModuleFactoryLoader } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ValueProvider } from '@angular/core';
 import { ProductRoutingModule } from '@atonspa/product';
 
 import { AppComponent } from './app.component';
-import { LazyModule } from '@atonspa/lazy';
+import { LazyModule, ILazyComponentDef, LAZY_COMPONENTS } from '@atonspa/lazy';
 import { RouterModule } from '@angular/router';
+import { registryProvider } from './app.component.registry';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
     BrowserModule,
     LazyModule,
     ProductRoutingModule,
-    RouterModule.forRoot([
-      { path: '', redirectTo: '/product', pathMatch: 'full' }
-    ], {
-      enableTracing: true,
-      useHash: true
-    })
+    RouterModule.forRoot(
+      [{ path: '', redirectTo: '/product', pathMatch: 'full' }],
+      {
+        useHash: true,
+      }
+    ),
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [
+    // registryProvider
+  ],
 })
-export class AppModule { }
+export class AppModule {}
