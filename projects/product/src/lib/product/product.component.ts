@@ -6,7 +6,6 @@ import {
   NO_ERRORS_SCHEMA,
 } from '@angular/core';
 import { LazyService, LazyModule } from '@atonspa/lazy';
-import { ProductWebModule } from '../product-web/product-web.component';
 import { RouterModule } from '@angular/router';
 import { ProductService } from '../product.service';
 import { CommonModule } from '@angular/common';
@@ -46,7 +45,6 @@ export class ProductComponent {
   imports: [
     CommonModule,
     LazyModule,
-    ProductWebModule,
     RouterModule.forChild([{ path: '', component: ProductComponent }]),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

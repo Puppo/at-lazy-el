@@ -8,7 +8,11 @@ import {
   Type,
   Optional,
 } from '@angular/core';
-import { ILazyComponentDef, LAZY_COMPONENTS } from './lazy.component';
+import {
+  ILazyComponentDef,
+  LazyComponentKeyService,
+  LAZY_COMPONENTS,
+} from './lazy.component';
 import { skipWhile, map, tap } from 'rxjs/operators';
 import { createCustomElement } from '@angular/elements';
 import { LAZY_CACHE, LazyState } from './lazy.cache';
@@ -23,7 +27,9 @@ export class LazyService {
     private injector: Injector,
     @Optional()
     @Inject(LAZY_COMPONENTS)
-    protected lazyComponents: ILazyComponentDef[]
+    protected lazyComponents: ILazyComponentDef[],
+    @Optional()
+    protected customSv: LazyComponentKeyService
   ) {}
 
   /**
@@ -49,11 +55,17 @@ export class LazyService {
       const definitions = (this.lazyComponents || []).filter(
         (x) => x.selector === selector
       );
-      const lazyDef = definitions.find((c) => !!c.custom) || definitions[0];
-      if (!lazyDef) {
+      const lazyDef =
+        (this.customSv &&
+          definitions.find((c) => c.custom === this.customSv.getCustomKey())) ||
+        (definitions.length && definitions[0]);
+      if (!lazyDef && componentType) {
         this.registerWebComponents(selector, componentType);
         LAZY_CACHE.set(selector, LazyState.loaded);
       } else {
+        if (!lazyDef) {
+          throw new Error(`${selector} component definition not found`);
+        }
         this.loadLazyModuleFactory(lazyDef.loadChildren)
           .then((moduleFactory) => this.createModule(moduleFactory))
           .then((moduleRef) => {

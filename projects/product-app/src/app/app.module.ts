@@ -22,8 +22,6 @@ import { registryProvider } from './app.component.registry';
     ),
   ],
   bootstrap: [AppComponent],
-  providers: [
-    // registryProvider
-  ],
+  providers: [registryProvider],
 })
 export class AppModule {}

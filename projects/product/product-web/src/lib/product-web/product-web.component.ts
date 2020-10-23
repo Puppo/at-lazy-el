@@ -7,7 +7,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { ProductService } from '../product.service';
+import { ProductService } from '@atonspa/product';
 import { LazyComponentModule, LazyService } from '@atonspa/lazy';
 
 export const ProductWebComponentSelector = 'lib-product-web';

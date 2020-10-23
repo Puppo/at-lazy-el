@@ -9,7 +9,7 @@ import {
   ProductWebComponent,
   ProductWebComponentSelector,
   ProductWebComponentTemplate,
-} from '@atonspa/product';
+} from '@atonspa/product/product-web';
 
 @Component({
   selector: 'lib-custom-web',

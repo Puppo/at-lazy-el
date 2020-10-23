@@ -4,19 +4,24 @@ import { RouterModule } from '@angular/router';
 import { ProductRoutingModule } from '@atonspa/product';
 
 import { AppComponent } from './app.component';
-import { LazyModule, createLazyComponentProvider } from '@atonspa/lazy';
+import {
+  LazyModule,
+  createLazyComponentProvider,
+  LazyComponentKeyService,
+} from '@atonspa/lazy';
+import { AppComponentKeyService, CUSTOM_KEY } from './app.custom.service';
 
 const productWebRegistry: ValueProvider = createLazyComponentProvider({
   selector: 'lib-product-web',
   loadChildren: () =>
-    import('@atonspa/product').then((mod) => mod.ProductWebModule),
+    import('@atonspa/product/product-web').then((mod) => mod.ProductWebModule),
 });
 
 const productWebCustomRegistry: ValueProvider = createLazyComponentProvider({
   selector: 'lib-product-web',
   loadChildren: () =>
     import('@atonspa/custom').then((mod) => mod.CustomWebModule),
-  custom: true,
+  custom: CUSTOM_KEY,
 });
 
 @NgModule({
@@ -32,7 +37,8 @@ const productWebCustomRegistry: ValueProvider = createLazyComponentProvider({
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    // productWebRegistry,
+    { provide: LazyComponentKeyService, useExisting: AppComponentKeyService },
+    productWebRegistry,
     productWebCustomRegistry,
   ],
   bootstrap: [AppComponent],
