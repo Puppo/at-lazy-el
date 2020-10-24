@@ -16,7 +16,9 @@
     "paths": {
       "@atonspa/lazy": ["dist/lazy"],
       "@atonspa/product": ["dist/product"],
-      "@atonspa/custom": ["dist/custom"]
+      "@atonspa/product/*": ["dist/product/*"],
+      "@atonspa/custom": ["dist/custom"],
+      "@atonspa/custom/*": ["dist/custom/*"]
     }
   },
   "angularCompilerOptions": {

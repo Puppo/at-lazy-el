@@ -4,8 +4,8 @@
   "lib": {
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
-      "@atonspa/lazy": "@atonspa/lazy",
-      "@atonspa/product": "@atonspa/product"
+      "@atonspa/lazy": "atonspa.Lazy",
+      "@atonspa/product": "atonspa.Product"
     }
   }
 }

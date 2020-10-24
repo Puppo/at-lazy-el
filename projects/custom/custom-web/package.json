@@ -1,3 +1,14 @@
 {
-  "ngPackage": {}
+  "ngPackage": {
+    "lib": {
+      "entryFile": "./src/public-api.ts",
+      "umdModuleIds": {
+        "@atonspa/product/product-web": "atonspa.Product.Productweb"
+      }
+    }
+  },
+  "peerDependencies": {
+    "@atonspa/product": "0.0.1",
+    "@atonspa/product/product-web": "0.0.1"
+  }
 }

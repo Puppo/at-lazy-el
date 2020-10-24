@@ -13,15 +13,19 @@ import { AppComponentKeyService, CUSTOM_KEY } from './app.custom.service';
 
 const productWebRegistry: ValueProvider = createLazyComponentProvider({
   selector: 'lib-product-web',
+  // loadChildren: () =>
+  //   import('@atonspa/product/product-web').then((mod) => mod.ProductWebModule),
   loadChildren: () =>
     import('@atonspa/product/product-web').then((mod) => mod.ProductWebModule),
 });
 
 const productWebCustomRegistry: ValueProvider = createLazyComponentProvider({
   selector: 'lib-product-web',
+  // loadChildren: () =>
+  //   import('@atonspa/custom').then((mod) => mod.CustomWebModule),
   loadChildren: () =>
-    import('@atonspa/custom').then((mod) => mod.CustomWebModule),
-  custom: CUSTOM_KEY,
+    import('@atonspa/custom/custom-web').then((mod) => mod.CustomWebModule),
+  custom: 'pippo',
 });
 
 @NgModule({
