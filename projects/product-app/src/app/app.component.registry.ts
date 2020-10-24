@@ -7,7 +7,5 @@ export const registryProvider = [
       import('@atonspa/product/product-web').then(
         (mod) => mod.ProductWebModule
       ),
-    // loadChildren: () =>
-    //   import('@atonspa/product').then((mod) => mod.ProductWebModule),
   }),
 ];
