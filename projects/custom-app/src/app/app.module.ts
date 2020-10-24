@@ -25,7 +25,7 @@ const productWebCustomRegistry: ValueProvider = createLazyComponentProvider({
   //   import('@atonspa/custom').then((mod) => mod.CustomWebModule),
   loadChildren: () =>
     import('@atonspa/custom/custom-web').then((mod) => mod.CustomWebModule),
-  custom: 'pippo',
+  custom: CUSTOM_KEY,
 });
 
 @NgModule({

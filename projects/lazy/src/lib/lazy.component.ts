@@ -1,11 +1,5 @@
-import { LoadChildrenCallback } from '@angular/router';
-import { Injectable, InjectionToken, ValueProvider } from '@angular/core';
-
-export interface ILazyComponentDef {
-  selector: string;
-  loadChildren: LoadChildrenCallback;
-  custom?: string;
-}
+import { InjectionToken, ValueProvider } from '@angular/core';
+import { ILazyComponentDef } from './lazy.component.model';
 
 export const LAZY_COMPONENTS = new InjectionToken<ILazyComponentDef[]>(
   'LAZY_COMPONENTS'
@@ -21,7 +15,6 @@ export function createLazyComponentProvider(
   };
 }
 
-@Injectable()
 export abstract class LazyComponentKeyService {
   abstract getCustomKey(): string;
 }

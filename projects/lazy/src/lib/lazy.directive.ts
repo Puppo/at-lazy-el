@@ -4,10 +4,8 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { LAZY_CACHE, LazyState } from './lazy.cache';
-import { take, tap, skipWhile, catchError } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { LazyService } from './lazy.service';
-import { from } from 'rxjs';
 
 @Directive({
   selector: '[libLazyEl]',

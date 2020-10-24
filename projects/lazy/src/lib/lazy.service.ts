@@ -8,15 +8,12 @@ import {
   Type,
   Optional,
 } from '@angular/core';
-import {
-  ILazyComponentDef,
-  LazyComponentKeyService,
-  LAZY_COMPONENTS,
-} from './lazy.component';
-import { skipWhile, map, tap } from 'rxjs/operators';
+import { LazyComponentKeyService, LAZY_COMPONENTS } from './lazy.component';
+import { skipWhile, map } from 'rxjs/operators';
 import { createCustomElement } from '@angular/elements';
 import { LAZY_CACHE, LazyState } from './lazy.cache';
 import { Observable } from 'rxjs';
+import { ILazyComponentDef } from './lazy.component.model';
 
 @Injectable({
   providedIn: 'root',
