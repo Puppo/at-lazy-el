@@ -1,23 +1,20 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export type LazyState = 'none' | 'loading' | 'loaded' | 'error';
+export type LazyState = 'none' | 'loading' | 'loaded' | 'error' | 'notfound';
 export const LazyState = {
   none: 'none' as LazyState,
   loading: 'loading' as LazyState,
   loaded: 'loaded' as LazyState,
-  error: 'error' as LazyState
+  error: 'error' as LazyState,
+  notfound: 'notfound' as LazyState,
 };
 
 export class LazyCache {
-
   private cache: {
     [key: string]: BehaviorSubject<LazyState>;
   } = {};
 
-  add(
-    selector: string,
-    state: LazyState = LazyState.none
-  ): void {
+  add(selector: string, state: LazyState = LazyState.none): void {
     if (this.cache[selector]) {
       throw new Error(`${selector} already add`);
     }
@@ -50,7 +47,6 @@ export class LazyCache {
   has(selector: string): boolean {
     return !!this.cache[selector];
   }
-
 }
 
 export const LAZY_CACHE = new LazyCache();

@@ -7,13 +7,15 @@ import {
   Injector,
   Type,
   Optional,
+  isDevMode,
 } from '@angular/core';
 import { LazyComponentKeyService, LAZY_COMPONENTS } from './lazy.component';
 import { skipWhile, map } from 'rxjs/operators';
 import { createCustomElement } from '@angular/elements';
 import { LAZY_CACHE, LazyState } from './lazy.cache';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { ILazyComponentDef } from './lazy.component.model';
+import { LoadComponentResultInterface } from './lazy.service.model';
 
 @Injectable({
   providedIn: 'root',
@@ -31,9 +33,9 @@ export class LazyService {
 
   /**
    * Load web component from LAZY_COMPONENTS definition
-   * @param selector component selector
+   * @param selectors components selectors
    */
-  load(selector: string): Observable<boolean>;
+  load(selectors: string[]): Observable<LoadComponentResultInterface[]>;
   /**
    * Load web component
    * if LAZY_COMPONENTS contains selector load lazy component
@@ -44,11 +46,40 @@ export class LazyService {
    */
   load(selector: string, componentType: Type<any>): Promise<boolean>;
   load(
+    arg1: string | string[],
+    componentType?: Type<any>
+  ): Promise<boolean> | Observable<LoadComponentResultInterface[]> {
+    if (arg1 instanceof Array) {
+      return combineLatest(arg1.map((s) => this.loadComponent(s)));
+    } else {
+      return this.loadComponent(arg1, componentType);
+    }
+  }
+
+  /**
+   * Load a component from its selector
+   * @param selector component selector
+   */
+  private loadComponent(
+    selector: string
+  ): Observable<LoadComponentResultInterface>;
+  /**
+   * Load a component from its selector
+   * otherwise load default implementation
+   * @param selector component selector
+   * @param componentType component type default
+   */
+  private loadComponent(
+    selector: string,
+    componentType: Type<any>
+  ): Promise<boolean>;
+  private loadComponent(
     selector: string,
     componentType?: Type<any>
-  ): Promise<boolean> | Observable<boolean> {
+  ): Promise<boolean> | Observable<LoadComponentResultInterface> {
     if (!LAZY_CACHE.has(selector)) {
       LAZY_CACHE.add(selector, LazyState.loading);
+      // find component definition
       const definitions = (this.lazyComponents || []).filter(
         (x) => x.selector === selector
       );
@@ -57,35 +88,54 @@ export class LazyService {
           definitions.find((c) => c.custom === this.customSv.getCustomKey())) ||
         (definitions.length && definitions[0]);
       if (!lazyDef && componentType) {
+        // if component definition is not found
+        // but there is a component default type
+        // the system load the default type
         this.registerWebComponents(selector, componentType);
         LAZY_CACHE.set(selector, LazyState.loaded);
       } else {
         if (!lazyDef) {
-          throw new Error(`${selector} component definition not found`);
+          // if component definition is not found
+          // the system set the component in the cache with state notfound
+          // we use not found because the component can be a angular components
+          // in console we show a warning
+          LAZY_CACHE.set(selector, LazyState.notfound);
+          if (isDevMode()) {
+            console.warn(`component ${selector} not found`);
+          }
+        } else {
+          // if component definition is found
+          // the system load th definition
+          this.loadLazyModuleFactory(lazyDef.loadChildren)
+            .then((moduleFactory) => this.createModule(moduleFactory))
+            .then((moduleRef) => {
+              this.registerWebComponents(
+                selector,
+                moduleRef.instance.components[selector],
+                moduleRef.injector
+              );
+              LAZY_CACHE.set(selector, LazyState.loaded);
+            })
+            .catch((err) => {
+              LAZY_CACHE.set(selector, LazyState.error);
+              console.error(err);
+            });
         }
-        this.loadLazyModuleFactory(lazyDef.loadChildren)
-          .then((moduleFactory) => this.createModule(moduleFactory))
-          .then((moduleRef) => {
-            this.registerWebComponents(
-              selector,
-              moduleRef.instance.components[selector],
-              moduleRef.injector
-            );
-            LAZY_CACHE.set(selector, LazyState.loaded);
-          })
-          .catch((err) => {
-            LAZY_CACHE.set(selector, LazyState.error);
-            console.error(err);
-          });
       }
     }
 
     const result = LAZY_CACHE.get(selector).pipe(
-      skipWhile((x) => x === LazyState.loading),
-      map((x) => x === LazyState.loaded)
+      skipWhile((x) => x === LazyState.loading)
     );
 
-    return componentType ? result.toPromise() : result;
+    return componentType
+      ? result.pipe(map((x) => x === LazyState.loaded)).toPromise()
+      : result.pipe(
+          map((state) => ({
+            selector,
+            state,
+          }))
+        );
   }
 
   /**
