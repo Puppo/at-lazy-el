@@ -10,7 +10,7 @@ import {
   isDevMode,
 } from '@angular/core';
 import { LazyComponentKeyService, LAZY_COMPONENTS } from './lazy.component';
-import { skipWhile, map } from 'rxjs/operators';
+import { skipWhile, map, take } from 'rxjs/operators';
 import { createCustomElement } from '@angular/elements';
 import { LAZY_CACHE, LazyState } from './lazy.cache';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -129,7 +129,12 @@ export class LazyService {
     );
 
     return componentType
-      ? result.pipe(map((x) => x === LazyState.loaded)).toPromise()
+      ? result
+          .pipe(
+            map((x) => x === LazyState.loaded),
+            take(1)
+          )
+          .toPromise()
       : result.pipe(
           map((state) => ({
             selector,
